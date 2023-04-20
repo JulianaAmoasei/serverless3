@@ -19,6 +19,12 @@ resources:
               AllowedHeaders:
                 - "*"
 
+params:
+  dev:
+    bucket: alunos-csv-local
+  prod:
+    bucket: alunos-csv
+
 provider:
   name: aws
   runtime: nodejs18.x
@@ -30,13 +36,15 @@ provider:
             - s3:GetObject
           Resource: 
             - arn:aws:s3:::alunos-csv/*
+  environment:
+    STAGE: ${sls:stage}
 
 functions:
   cadastrarAlunos:
-    handler: cadastro_batch/aws/index.cadastrarAlunos
+    handler: cadastro_batch/index.cadastrarAlunos
     events:
       - s3:
-          bucket: alunos-csv
+          bucket: ${param:bucket}
           event: s3:ObjectCreated:*
           rules:
             - suffix: .csv
@@ -49,22 +57,16 @@ functions:
           method: post
     enabled: false
 
-  cadastrarAlunosDoBucketLocal:
-    handler: cadastro_batch/local/index.cadastrarAlunosDoBucketLocal
-    events:
-      - s3:
-          bucket: alunos-csv-local
-          event: s3:ObjectCreated:*
-          rules:
-            - suffix: .csv
-    enabled: false
-
   enviaUrlPreassinada:
     handler: presigned_url/index.enviaUrlPreassinada
     events:
       - httpApi:
           path: /alunos/presignurl
           method: post
+
+custom:
+  serverless-offline:
+    httpPort: 3001
 
 plugins:
   - serverless-offline

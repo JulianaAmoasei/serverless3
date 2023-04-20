@@ -1,9 +1,27 @@
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
-const { cadastrarAlunosNoBd } = require("../cadastrarAlunosNoBd");
-const { converteDadosCsv } = require("../converteDadosCsv");
+const { cadastrarAlunosNoBd } = require("./cadastrarAlunosNoBd");
+const { converteDadosCsv } = require("./converteDadosCsv");
+
+async function criaClienteS3() {
+
+  if(process.env.STAGE === "dev") {
+    return new S3Client({
+      forcePathStyle: true,
+      credentials: {
+        accessKeyId: "S3RVER",
+        secretAccessKey: "S3RVER"
+      },
+      endpoint: "http://localhost:4569"
+    });
+  } 
+  else if (process.env.STAGE === "prod") {
+    return new S3Client({});
+  }
+}
 
 async function obtemDadosDoCsvDoBucket(nome, chave) {
-  const cliente = new S3Client({});
+
+  const cliente = await criaClienteS3()
 
   const comando = new GetObjectCommand({
     Bucket: nome,
@@ -16,7 +34,7 @@ async function obtemDadosDoCsvDoBucket(nome, chave) {
   return dadosCsv;
 }
 
-module.exports.cadastrarAlunos = async (evento) => {
+async function cadastrarAlunos (evento) {
   try {
     const eventoS3 = evento.Records[0].s3;
 
@@ -26,7 +44,7 @@ module.exports.cadastrarAlunos = async (evento) => {
     const dadosArquivo = await obtemDadosDoCsvDoBucket(nomeBucket, chaveBucket);
   
     const alunos = await converteDadosCsv(dadosArquivo);
-  
+
     await cadastrarAlunosNoBd(alunos);
 
     console.log("Cadastro dos alunos realizado com sucesso!");
@@ -34,3 +52,8 @@ module.exports.cadastrarAlunos = async (evento) => {
     console.log(erro);
   }
 };
+
+module.exports = {
+  criaClienteS3,
+  cadastrarAlunos
+}

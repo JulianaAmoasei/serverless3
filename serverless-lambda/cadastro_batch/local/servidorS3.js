@@ -1,20 +1,11 @@
-const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const { readFile } = require("fs/promises");
 const { join } = require("path");
-
-function criaClienteS3Local() {
-  return new S3Client({
-    forcePathStyle: true,
-    credentials: {
-      accessKeyId: "S3RVER",
-      secretAccessKey: "S3RVER"
-    },
-    endpoint: "http://localhost:4569"
-  });
-}
+const { criaClienteS3 } = require("../index")
 
 async function fazUploadNoBucket() {
-  const cliente = criaClienteS3Local();
+  const cliente = await criaClienteS3();
+
 
   const nomeArquivo = "cadastrar_alunos.csv";
   const caminhoArquivo = join(__dirname, nomeArquivo);
@@ -29,21 +20,4 @@ async function fazUploadNoBucket() {
   await cliente.send(comandoUpload);
 }
 
-async function obtemDadosDoCsvDoBucket(nome, chave) {
-  const cliente = criaClienteS3Local();
-
-  const comando = new GetObjectCommand({
-    Bucket: nome,
-    Key: chave
-  });
-
-  const resposta = await cliente.send(comando);
-  const dadosCsv = await resposta.Body.transformToString("utf-8");
-
-  return dadosCsv;
-}
-
-module.exports = { 
-  fazUploadNoBucket,
-  obtemDadosDoCsvDoBucket
-}
+module.exports = { fazUploadNoBucket };
