@@ -31,9 +31,7 @@ module.exports.taskCadastro = async (event, context) => {
   const connection = await connectRabbitMQ();
   const channel = await createChannel(connection);
 
-  const message = 'arquivo taskCadastro';
-
-  console.log("agora está na task", event);
+  const message = JSON.stringify(event.body);
 
   channel.assertQueue(queueName, { durable: true });
   channel.sendToQueue(queueName, Buffer.from(message));

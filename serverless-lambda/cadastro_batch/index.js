@@ -44,17 +44,23 @@ async function cadastrarAlunos (evento) {
   
     const alunos = await converteDadosCsv(dadosArquivo);
 
-    const res = await fetch("http://localhost:3001/alunos/rabbit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "PUT,POST,GET",
-      },
-      body: JSON.stringify(alunos),
-    })
+    const alunosPromessas = alunos.map((aluno) => {
+      return fetch("http://localhost:3001/alunos/rabbit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "Content-Type",
+          "Access-Control-Allow-Methods": "PUT,POST,GET",
+        },
+        body: JSON.stringify(aluno)
+      })
+    });
+  
+    const respostas = await Promise.all(alunosPromessas);
 
+    return respostas;
+  
   } catch (erro) {
     console.log(erro);
   }

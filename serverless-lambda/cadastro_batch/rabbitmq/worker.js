@@ -36,7 +36,7 @@ module.exports.worker = async (event, context) => {
 
   channel.consume(queueName, (msg) => {
     if (msg !== null) {
-      console.log('Message received:', msg.content.toString());
+      console.log('Message received:', JSON.parse(msg.content));
       channel.ack(msg);
 
       // Process the message here
