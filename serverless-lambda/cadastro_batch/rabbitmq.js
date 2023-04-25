@@ -2,6 +2,7 @@ const amqp = require('amqplib/callback_api');
 
 async function cadastroProducer (event) {
 
+  console.log("chamou cadastroProducer");
   console.log(event);
 
   return new Promise((resolve, reject) => {

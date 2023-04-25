@@ -64,6 +64,28 @@ functions:
           path: /alunos/presignurl
           method: post
 
+  rabbitmqProducer:
+    handler: cadastro_batch/local/rabbitmq.rabbitmqProducer
+    events:
+      - s3:
+          bucket: ${param:bucket}
+          event: s3:ObjectCreated:*
+          rules:
+            - suffix: .csv
+
+  rabbitmqConsumer:
+    handler: cadastro_batch/local/rabbitmq.rabbitmqConsumer
+    events:
+      # - rabbitmq:
+      #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx
+      #     queue: cadastro
+      #     basicAuthArn: arn:aws:secretsmanager:us-east-1:01234567890:secret:MySecret
+      - http:
+          path: process-rabbitmq
+          method: post
+
+
+
 custom:
   serverless-offline:
     httpPort: 3001
