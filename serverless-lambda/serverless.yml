@@ -64,17 +64,20 @@ functions:
           path: /alunos/presignurl
           method: post
 
-  rabbitmqProducer:
-    handler: cadastro_batch/local/rabbitmq.rabbitmqProducer
+  taskCadastro:
+    handler: cadastro_batch/rabbitmq/taskCadastro.taskCadastro
     events:
-      - s3:
-          bucket: ${param:bucket}
-          event: s3:ObjectCreated:*
-          rules:
-            - suffix: .csv
+      - httpApi:
+          path: /alunos/rabbit
+          method: post
+      # - s3:
+      #     bucket: ${param:bucket}
+      #     event: s3:ObjectCreated:*
+      #     rules:
+      #       - suffix: .csv
 
-  rabbitmqConsumer:
-    handler: cadastro_batch/local/rabbitmq.rabbitmqConsumer
+  worker:
+    handler: cadastro_batch/rabbitmq/worker.worker
     events:
       # - rabbitmq:
       #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx

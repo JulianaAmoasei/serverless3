@@ -1,7 +1,5 @@
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
-// const { cadastrarAlunosNoBd } = require("./cadastrarAlunosNoBd");
 const { converteDadosCsv } = require("./converteDadosCsv");
-const { cadastroProducer } = require("./rabbitmq");
 
 async function criaClienteS3() {
 
@@ -46,12 +44,17 @@ async function cadastrarAlunos (evento) {
   
     const alunos = await converteDadosCsv(dadosArquivo);
 
-    // await cadastroProducer(alunos);
+    const res = await fetch("http://localhost:3001/alunos/rabbit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "PUT,POST,GET",
+      },
+      body: JSON.stringify(alunos),
+    })
 
-    // aqui tem que criar uma nova msg no rabbitmq avisando da inserção
-    // await cadastrarAlunosNoBd(alunos);
-
-    // console.log("Cadastro dos alunos realizado com sucesso!");
   } catch (erro) {
     console.log(erro);
   }
