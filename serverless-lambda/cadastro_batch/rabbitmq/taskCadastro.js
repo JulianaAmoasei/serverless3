@@ -1,31 +1,6 @@
-const amqp = require('amqplib/callback_api');
+const { connectRabbitMQ, createChannel } = require('../../rabbitmqConfig/connection')
 
-const rabbitmqURL = 'amqp://localhost';
 const queueName = 'cadastro';
-
-async function connectRabbitMQ() {
-  return new Promise((resolve, reject) => {
-    amqp.connect(rabbitmqURL, (error, connection) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(connection);
-      }
-    });
-  });
-}
-
-async function createChannel(connection) {
-  return new Promise((resolve, reject) => {
-    connection.createChannel((error, channel) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(channel);
-      }
-    });
-  });
-}
 
 module.exports.taskCadastro = async (event, context) => {
   const connection = await connectRabbitMQ();

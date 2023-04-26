@@ -1,31 +1,6 @@
-var amqp = require('amqplib/callback_api');
+const { connectRabbitMQ, createChannel } = require('../../rabbitmqConfig/connection')
 
-const rabbitmqURL = 'amqp://localhost';
 const queueName = 'cadastro';
-
-async function connectRabbitMQ() {
-  return new Promise((resolve, reject) => {
-    amqp.connect(rabbitmqURL, (error, connection) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(connection);
-      }
-    });
-  });
-}
-
-async function createChannel(connection) {
-  return new Promise((resolve, reject) => {
-    connection.createChannel((error, channel) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(channel);
-      }
-    });
-  });
-} 
 
 module.exports.worker = async (event, context) => {
   const connection = await connectRabbitMQ();
@@ -34,12 +9,21 @@ module.exports.worker = async (event, context) => {
   channel.assertQueue(queueName, { durable: true });
   channel.prefetch(1);
 
-  channel.consume(queueName, (msg) => {
+  channel.consume(queueName, async (msg) => {
     if (msg !== null) {
-      console.log('Message received:', JSON.parse(msg.content));
       channel.ack(msg);
+      const objNovoAluno = JSON.parse(msg.content);
 
-      // Process the message here
+      await fetch("http://localhost:3001/dev/api-caller", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "PUT,POST,GET",
+          },
+          body: JSON.stringify(objNovoAluno)
+        })
     }
   }, { noAck: false });
 

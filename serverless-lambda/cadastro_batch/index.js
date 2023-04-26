@@ -45,7 +45,7 @@ async function cadastrarAlunos (evento) {
     const alunos = await converteDadosCsv(dadosArquivo);
 
     const alunosPromessas = alunos.map((aluno) => {
-      return fetch("http://localhost:3001/alunos/rabbit", {
+      return fetch("http://localhost:3001/rabbit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

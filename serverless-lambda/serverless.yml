@@ -68,7 +68,7 @@ functions:
     handler: cadastro_batch/rabbitmq/taskCadastro.taskCadastro
     events:
       - httpApi:
-          path: /alunos/rabbit
+          path: /rabbit
           method: post
       # - s3:
       #     bucket: ${param:bucket}
@@ -87,7 +87,16 @@ functions:
           path: process-rabbitmq
           method: post
 
-
+  apiCaller:
+    handler: apiCaller/index.apiCaller
+    events:
+      # - rabbitmq:
+      #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx
+      #     queue: cadastro
+      #     basicAuthArn: arn:aws:secretsmanager:us-east-1:01234567890:secret:MySecret
+      - http:
+          path: api-caller
+          method: post
 
 custom:
   serverless-offline:
