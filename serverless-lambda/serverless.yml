@@ -83,7 +83,7 @@ functions:
       #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx
       #     queue: cadastro
       #     basicAuthArn: arn:aws:secretsmanager:us-east-1:01234567890:secret:MySecret
-      - http:
+      - httpApi:
           path: process-rabbitmq
           method: post
 
@@ -94,7 +94,7 @@ functions:
       #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx
       #     queue: cadastro
       #     basicAuthArn: arn:aws:secretsmanager:us-east-1:01234567890:secret:MySecret
-      - http:
+      - httpApi:
           path: api-caller
           method: post
   
@@ -105,7 +105,7 @@ functions:
       #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx
       #     queue: cadastro
       #     basicAuthArn: arn:aws:secretsmanager:us-east-1:01234567890:secret:MySecret
-      - http:
+      - httpApi:
           path: email
           method: post
 

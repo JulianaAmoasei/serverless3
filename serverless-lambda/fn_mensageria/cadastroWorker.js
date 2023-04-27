@@ -7,16 +7,16 @@ const queueName = config.queue.cadastro;
 module.exports.worker = async (event, context) => {
   const connection = await connectRabbitMQ();
   const channel = await createChannel(connection);
-
+  
   channel.assertQueue(queueName, { durable: true });
   channel.prefetch(1);
-
+  
   channel.consume(queueName, async (msg) => {
     if (msg !== null) {
       channel.ack(msg);
       const objNovoAluno = JSON.parse(msg.content);
-      const fetchObj = buildFetchObj("POST", "application/json", JSON.stringify(objNovoAluno))
-      await fetch(`${config.fetchApi.dev}/dev/api-caller`, fetchObj)
+      const fetchObj = buildFetchObj("POST", "application/json", objNovoAluno)
+      await fetch(`${config.fetchApi.dev}/api-caller`, fetchObj)
     }
   }, { noAck: false });
 

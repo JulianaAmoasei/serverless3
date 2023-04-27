@@ -1,5 +1,7 @@
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { converteDadosCsv } = require("./converteDadosCsv");
+const config = require("../config/config.json")
+const { buildFetchObj } = require("../utils/fetchHelper")
 
 async function criaClienteS3() {
 
@@ -39,22 +41,12 @@ async function cadastrarAlunos (evento) {
 
     const nomeBucket = eventoS3.bucket.name;
     const chaveBucket = decodeURIComponent(eventoS3.object.key.replace(/\+/g, " "));
-  
     const dadosArquivo = await obtemDadosDoCsvDoBucket(nomeBucket, chaveBucket);
-  
     const alunos = await converteDadosCsv(dadosArquivo);
 
     const alunosPromessas = alunos.map((aluno) => {
-      return fetch("http://localhost:3001/rabbit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Allow-Methods": "PUT,POST,GET",
-        },
-        body: JSON.stringify(aluno)
-      })
+      const fetchObj = buildFetchObj("POST", "application/json", JSON.stringify(aluno))
+      return fetch(`${config.fetchApi.dev}/rabbit`, fetchObj)
     });
   
     const respostas = await Promise.all(alunosPromessas);

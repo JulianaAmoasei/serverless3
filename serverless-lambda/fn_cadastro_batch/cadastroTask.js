@@ -1,6 +1,7 @@
 const { connectRabbitMQ, createChannel } = require('../config/rabbitmqConnection')
+const config = require('../config/config.json')
 
-const queueName = 'cadastro';
+const queueName = config.queue.cadastro;
 
 module.exports.cadastroProducer = async (event, context) => {
   const connection = await connectRabbitMQ();
