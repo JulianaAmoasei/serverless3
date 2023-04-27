@@ -35,7 +35,6 @@ async function requestPresignedUrl (chaveNomeArquivo) {
   try {
     const res = await fetch(`${BASE_URL}/alunos/presignurl`, fetchObj)
     const body = await res.json();
-    console.log(body.url);
     return body.url;
   } catch (erro) {
     return erro;
@@ -43,7 +42,6 @@ async function requestPresignedUrl (chaveNomeArquivo) {
 }
 
 async function enviaArquivoViaURL (url, arquivo) {
-  console.log(url, arquivo);
   const fetchObj = buildFetchObj("PUT", "text/csv; charset=utf-8", arquivo);
   try {
     const res = await fetch(url, fetchObj);

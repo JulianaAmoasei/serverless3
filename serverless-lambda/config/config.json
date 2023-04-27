@@ -1,0 +1,15 @@
+{
+  "amqp": "amqp://localhost",
+  "queue": {
+    "email": "nodemailer-amqp",
+    "cadastro": "cadastro"
+  },
+  "smtpServer": {
+    "port": 12345,
+    "host": "127.0.0.1"
+  },
+  "fetchApi": {
+    "prod": "http://curso-serverless2-api-65783251.us-east-1.elb.amazonaws.com",
+    "dev": "http://localhost:3001"
+}
+}

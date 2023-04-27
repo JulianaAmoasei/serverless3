@@ -1,6 +1,8 @@
-const { connectRabbitMQ, createChannel } = require('../../rabbitmqConfig/connection')
+const config = require('../config/config.json')
+const { buildFetchObj } = require('../utils/fetchHelper')
+const { connectRabbitMQ, createChannel } = require('../config/rabbitmqConnection')
 
-const queueName = 'cadastro';
+const queueName = config.queue.cadastro;
 
 module.exports.worker = async (event, context) => {
   const connection = await connectRabbitMQ();
@@ -13,17 +15,8 @@ module.exports.worker = async (event, context) => {
     if (msg !== null) {
       channel.ack(msg);
       const objNovoAluno = JSON.parse(msg.content);
-
-      await fetch("http://localhost:3001/dev/api-caller", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Methods": "PUT,POST,GET",
-          },
-          body: JSON.stringify(objNovoAluno)
-        })
+      const fetchObj = buildFetchObj("POST", "application/json", JSON.stringify(objNovoAluno))
+      await fetch(`${config.fetchApi.dev}/dev/api-caller`, fetchObj)
     }
   }, { noAck: false });
 

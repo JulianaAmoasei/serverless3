@@ -13,6 +13,8 @@
     "@aws-sdk/credential-providers": "^3.312.0",
     "@aws-sdk/s3-request-presigner": "^3.312.0",
     "amqplib": "^0.10.3",
-    "fast-csv": "^4.3.6"
+    "fast-csv": "^4.3.6",
+    "nodemailer": "^6.9.1",
+    "smtp-server": "^3.11.0"
   }
 }

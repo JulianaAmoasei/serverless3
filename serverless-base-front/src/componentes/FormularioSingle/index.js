@@ -25,7 +25,6 @@ const FormularioSingle = (props) => {
   };
 
   const formValido = () => {
-    console.log(nome.error, email.error);
     return !nome.error && !email.error;
   };
 

@@ -1,6 +1,7 @@
 const amqp = require('amqplib/callback_api');
+const config = require('./config.json')
 
-const rabbitmqURL = 'amqp://localhost';
+const rabbitmqURL = config.amqp;
 
 module.exports.connectRabbitMQ =() => {
   return new Promise((resolve, reject) => {

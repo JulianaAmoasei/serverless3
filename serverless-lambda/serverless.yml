@@ -41,7 +41,7 @@ provider:
 
 functions:
   cadastrarAlunos:
-    handler: cadastro_batch/index.cadastrarAlunos
+    handler: fn_cadastro_batch/index.cadastrarAlunos
     events:
       - s3:
           bucket: ${param:bucket}
@@ -50,7 +50,7 @@ functions:
             - suffix: .csv
 
   simulandoUploadDoCsv:
-    handler: cadastro_batch/local/index.simulandoUploadDoCsv
+    handler: fn_cadastro_batch/local/index.simulandoUploadDoCsv
     events:
       - httpApi:
           path: /alunos/batch
@@ -58,14 +58,14 @@ functions:
     enabled: false
 
   enviaUrlPreassinada:
-    handler: presigned_url/index.enviaUrlPreassinada
+    handler: fn_presigned_url/index.enviaUrlPreassinada
     events:
       - httpApi:
           path: /alunos/presignurl
           method: post
 
   taskCadastro:
-    handler: cadastro_batch/rabbitmq/taskCadastro.taskCadastro
+    handler: fn_cadastro_batch/cadastroTask.cadastroProducer
     events:
       - httpApi:
           path: /rabbit
@@ -77,7 +77,7 @@ functions:
       #       - suffix: .csv
 
   worker:
-    handler: cadastro_batch/rabbitmq/worker.worker
+    handler: fn_mensageria/cadastroWorker.worker
     events:
       # - rabbitmq:
       #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx
@@ -88,7 +88,7 @@ functions:
           method: post
 
   apiCaller:
-    handler: apiCaller/index.apiCaller
+    handler: fn_apiCaller/index.apiCaller
     events:
       # - rabbitmq:
       #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx
@@ -96,6 +96,17 @@ functions:
       #     basicAuthArn: arn:aws:secretsmanager:us-east-1:01234567890:secret:MySecret
       - http:
           path: api-caller
+          method: post
+  
+  emailSender:
+    handler: fn_emailSender/index.emailSender
+    events:
+      # - rabbitmq:
+      #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx
+      #     queue: cadastro
+      #     basicAuthArn: arn:aws:secretsmanager:us-east-1:01234567890:secret:MySecret
+      - http:
+          path: email
           method: post
 
 custom:
