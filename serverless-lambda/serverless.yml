@@ -38,6 +38,8 @@ provider:
             - arn:aws:s3:::alunos-csv/*
   environment:
     STAGE: ${sls:stage}
+    SLS_EMAIL_USER: juju@juju.com
+    SLS_EMAIL_PASSWORD: fdflksdjflksdj
 
 functions:
   cadastrarAlunos:
@@ -87,6 +89,17 @@ functions:
           path: process-rabbitmq
           method: post
 
+  emailWorker:
+    handler: fn_mensageria/emailWorker.emailWorker
+    events:
+      # - rabbitmq:
+      #     arn: arn:aws:mq:us-east-1:0000:broker:ExampleMQBroker:b-xxx-xxx
+      #     queue: cadastro
+      #     basicAuthArn: arn:aws:secretsmanager:us-east-1:01234567890:secret:MySecret
+      - httpApi:
+          path: email-worker
+          method: post
+
   apiCaller:
     handler: fn_apiCaller/index.apiCaller
     events:
@@ -98,6 +111,13 @@ functions:
           path: api-caller
           method: post
   
+  taskEmail:
+    handler: fn_emailSender/emailTask.emailProducer
+    events:
+      - httpApi:
+          path: rabbit-email
+          method: post
+
   emailSender:
     handler: fn_emailSender/index.emailSender
     events:

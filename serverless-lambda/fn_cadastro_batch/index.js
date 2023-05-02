@@ -45,6 +45,7 @@ async function cadastrarAlunos (evento) {
     const alunos = await converteDadosCsv(dadosArquivo);
 
     const alunosPromessas = alunos.map((aluno) => {
+      // vai ser substituído por um trigger do rabbit ao invés de http
       const fetchObj = buildFetchObj("POST", "application/json", JSON.stringify(aluno))
       return fetch(`${config.fetchApi.dev}/rabbit`, fetchObj)
     });

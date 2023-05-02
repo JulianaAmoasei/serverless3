@@ -1,34 +1,33 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
 
-module.exports.emailSender = async () => {
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
-  let testAccount = await nodemailer.createTestAccount();
+dotenv.config();
 
-  // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
+const buildMailObj = (to, subject, text) => {
+  return {
+    from: process.env.SLS_EMAIL_USER,
+    to: to,
+    subject: subject,
+    text: text,
+  };
+}
+
+module.exports.sendEmail = async (receiver) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
     auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
+      user: process.env.SLS_EMAIL_USER,
+      pass: process.env.SLS_EMAIL_PASSWORD,
     },
   });
 
-  // send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: '"Fred Foo 👻" <foo@example.com>', // sender address
-    to: "bar@example.com, baz@example.com", // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "Hello world?", // plain text body
-    html: "<b>Hello world?</b>", // html body
-  });
+  const mailOptions = buildMailObj(receiver, "teste", "oioi")
 
-  console.log("Message sent: %s", info.messageId);
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-  // Preview only available when sending through an Ethereal account
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+  try {
+    console.log("chegou aqui", mailOptions);
+    // const info = await transporter.sendMail(mailOptions);
+    // console.log('Email sent:', info.response);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
 }

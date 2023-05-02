@@ -149,7 +149,7 @@ Após a finalização do processo, a URL base da API será exibida no terminal:
 ```
 Outputs:
 
-IP_alb = "curso-serverless2-api-<idDaURL>.us-east-1.elb.amazonaws.com"
+IP_alb = "curso-serverless3-api-<idDaURL>.us-east-1.elb.amazonaws.com"
 ```
 Copie e cole a URL para ser utilizada durante o curso.
 Caso seja necessário, você pode consultar a URL no console da AWS. No menu de "Services" no canto superior esquerdo, acesse EC2 > Load balancers > curso-serverless-2 > DNS Name.
@@ -177,5 +177,5 @@ Utilize o *query param* `limite=<número>` para estabelecer outros números como
 Exemplo:
 
 ```
-http://curso-serverless2-api-<id>.us-east-1.elb.amazonaws.com/alunos?limite=50
+http://curso-serverless3-api-<id>.us-east-1.elb.amazonaws.com/alunos?limite=50
 ```

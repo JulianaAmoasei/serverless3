@@ -9,7 +9,7 @@
     "host": "127.0.0.1"
   },
   "fetchApi": {
-    "prod": "http://curso-serverless2-api-65783251.us-east-1.elb.amazonaws.com",
+    "prod": "http://curso-serverless2-api-1522448275.us-east-1.elb.amazonaws.com",
     "dev": "http://localhost:3001"
-}
+  }
 }

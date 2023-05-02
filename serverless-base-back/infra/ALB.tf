@@ -1,5 +1,5 @@
 resource "aws_lb" "alb" {
-  name               = "curso-serverless2-api"
+  name               = "curso-serverless3-api"
   security_groups    = [aws_security_group.alb.id]
   subnets            = module.vpc.public_subnets
 }
@@ -15,7 +15,7 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_lb_target_group" "alvo" {
-  name        = "curso-serverless2-api"
+  name        = "curso-serverless3-api"
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"

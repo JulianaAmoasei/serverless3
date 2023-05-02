@@ -1,4 +1,6 @@
-const BASE_URL = "http://curso-serverless2-api-65783251.us-east-1.elb.amazonaws.com";
+const config = require("../config/config.json")
+
+const BASE_URL = config.apiUrl.prod;
 
 function buildFetchObj(metodo, contentType, body) {
   return ({
@@ -27,9 +29,9 @@ async function criaRegistro(novoRegistro) {
 async function requestPresignedUrl (chaveNomeArquivo) {
   let BASE_URL;
   if (process.env.REACT_APP_ENVIRONMENT === "dev") {
-    BASE_URL = "http://localhost:3001";
+    BASE_URL = config.apiUrl.dev;
   } else {
-    BASE_URL = "http://curso-serverless2-api-65783251.us-east-1.elb.amazonaws.com";
+    BASE_URL = config.apiUrl.prod;
   }
   const fetchObj = buildFetchObj("POST", "application/json", JSON.stringify({ nomeArquivo: chaveNomeArquivo }))
   try {
